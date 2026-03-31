@@ -2,41 +2,51 @@ from langchain_classic.retrievers import EnsembleRetriever
 from langchain_community.retrievers import BM25Retriever
 from langchain_community.vectorstores import FAISS
 
-from indexing.embedding import build_embeddings
-from indexing.chunk_store import load_chunks
-from core.config import VECTOR_STORE_PATH, CHUNKS_PATH
+from src.indexing.embedding import build_embeddings
+from src.indexing.chunk_store import load_chunks
+from src.core.config import VECTOR_STORE_PATH, CHUNKS_PATH, MODEL_NAME
 
 
-def load_vectorstore():
-    embeddings = build_embeddings()
-    return FAISS.load_local(
-        VECTOR_STORE_PATH,
-        embeddings,
-        allow_dangerous_deserialization=True,
-    )
+class Retriever:
+    def __init__(self, semantic_k: int = 15):
+        self.semantic_k = semantic_k
 
+        # load tài nguyên 1 lần duy nhất
+        self.embeddings = build_embeddings(MODEL_NAME)
+        self.vectorstore = self._load_vectorstore()
+        self.all_chunks = self._load_all_chunks()
 
-def load_all_chunks():
-    return load_chunks(CHUNKS_PATH)
+        # build retrievers
+        self.retriever = self._build_retriever()
 
+    def _load_vectorstore(self):
+        return FAISS.load_local(
+            VECTOR_STORE_PATH,
+            self.embeddings,
+            allow_dangerous_deserialization=True,
+        )
 
-def build_retriever(semantic_k: int = 20):
-    vectorstore = load_vectorstore()
-    faiss_retriever = vectorstore.as_retriever(search_kwargs={"k": semantic_k})
+    def _load_all_chunks(self):
+        return load_chunks(CHUNKS_PATH)
 
-    all_chunks = load_all_chunks()
-    bm25_retriever = BM25Retriever.from_documents(all_chunks)
-    bm25_retriever.k = semantic_k
+    def _build_retriever(self):
+        # FAISS retriever
+        faiss_retriever = self.vectorstore.as_retriever(
+            search_kwargs={"k": self.semantic_k}
+        )
 
-    ensemble_retriever = EnsembleRetriever(
-        retrievers=[bm25_retriever, faiss_retriever],
-        weights=[0.6, 0.4],
-        # id_key="chunk_id",  # bật nếu metadata của chunk có id riêng
-    )
-    return ensemble_retriever
+        # BM25 retriever
+        bm25_retriever = BM25Retriever.from_documents(self.all_chunks)
+        bm25_retriever.k = self.semantic_k
 
+        # Ensemble
+        ensemble_retriever = EnsembleRetriever(
+            retrievers=[bm25_retriever, faiss_retriever],
+            weights=[0.6, 0.4],
+        )
 
-def retrieve_docs(query: str, k: int = 3):
-    retriever = build_retriever(semantic_k=15)
-    docs = retriever.invoke(query)
-    return docs[:k]
+        return ensemble_retriever
+
+    def retrieve(self, query: str, k: int = 3):
+        docs = self.retriever.invoke(query)
+        return docs[:k]

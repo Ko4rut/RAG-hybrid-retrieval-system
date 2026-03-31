@@ -1,6 +1,6 @@
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+# from core.config import CHUNK_SIZE, CHUNK_OVERLAP
 MARKDOWN_SEPARATORS = [
     "\n\n",
     "\n",
@@ -20,7 +20,7 @@ def build_text_splitter(CHUNK_SIZE: int, CHUNK_OVERLAP: int) -> RecursiveCharact
     )
 
 
-def chunk_documents(docs: list[Document], CHUNK_SIZE: int, CHUNK_OVERLAP: int) -> list[Document]:
+def chunk_documents(docs: list[Document], CHUNK_SIZE: int , CHUNK_OVERLAP: int ) -> list[Document]:
     splitter = build_text_splitter(CHUNK_SIZE, CHUNK_OVERLAP)
     chunks = splitter.split_documents(docs)
 

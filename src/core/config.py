@@ -10,4 +10,4 @@ CHUNKS_PATH = STORAGE_DIR / "chunks.pkl"
 CHUNK_SIZE = 400
 CHUNK_OVERLAP = 80
 TOP_K = 4
-MODEL_NAME = "nomic-embed-text:latest"
+MODEL_NAME = "nomic-embed-text-v2-moe:latest"

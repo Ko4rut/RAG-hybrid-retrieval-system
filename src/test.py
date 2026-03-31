@@ -1,6 +1,6 @@
 from rag.retriever import build_retriever
 
-query = "What is Ash Ladder"
+query = "What is the Ash Ladder"
 k = 10
 
 def filter_docs(docs, query: str):
@@ -13,15 +13,9 @@ def filter_docs(docs, query: str):
         # bỏ chunk quá ngắn
         if len(text) < 80:
             continue
-
-        # bỏ chunk chỉ mang tính tiêu đề / kết thúc file
-        if "end of volume" in text:
-            continue
-        if text.startswith("under-earth survival guide"):
-            continue
-
-        filtered.append(doc)
-
+        if any(word in text for word in q):
+            filtered.append(doc)
+        
     return filtered
 
 retriever = build_retriever(semantic_k=15)

@@ -3,7 +3,7 @@ from pathlib import Path
 from langchain_core.documents import Document
 
 
-def save_chunks(chunks: list[Document], path: str | Path) -> None:
+def save_chunks(chunks: list[Document], path: str | Path ) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -11,7 +11,7 @@ def save_chunks(chunks: list[Document], path: str | Path) -> None:
         pickle.dump(chunks, f)
 
 
-def load_chunks(path: str | Path) -> list[Document]:
+def load_chunks(path: str | Path ) -> list[Document]:
     path = Path(path)
 
     with open(path, "rb") as f:
