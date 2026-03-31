@@ -1,13 +1,15 @@
 from src.rag.retriever import Retriever
 from src.rag.prompt import template_prompt
 from langchain_ollama import ChatOllama
+from src.core.config import MODEL_LLM, OLLAMA_BASE_URL
 import time
 
 class RAG_Ko4rut:
-    def __init__(self, model="qwen3:4b", temperature=0, semantic_k=15, top_k = 5):
+    def __init__(self, model=MODEL_LLM, temperature=0, semantic_k=15, top_k = 5):
         self.llm = ChatOllama(
             model=model,
-            temperature=temperature
+            temperature=temperature,
+            base_url= OLLAMA_BASE_URL
         )
         self.retriever =Retriever(semantic_k=semantic_k)
         self.top_k = top_k
