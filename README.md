@@ -29,6 +29,11 @@ The goal of this project is not just to “make a chatbot”, but to explore:
 
 ## Architecture
 
+
+![Local RAG System Architecture](Pipeline_Diagram.png)
+
+*High-level architecture of the local RAG system, including document processing, indexing, retrieval, and response generation.*
+
 ```text
 User Query
    ↓
@@ -181,4 +186,5 @@ This project is not just about RAG — it is about:
 * Building controllable AI systems
 * Designing backend pipelines for LLMs
 * Understanding trade-offs between cloud vs local AI
+
 
