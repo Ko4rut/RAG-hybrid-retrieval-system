@@ -1,5 +1,5 @@
 <!-- ===================== HEADER ===================== -->
-# RAG Chatbot System (Ko4rut)
+# RAG Chatbot System
 **`Retrieval-Augmented Generation · Backend AI System · Production-Oriented Design`**
 
 ---
